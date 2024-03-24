@@ -166,7 +166,7 @@ const Navbar = ({ authenticateReducer, doLogout, getNewTokenRequest }) => {
                           </span>
                           <img
                             className="h-8 w-8 rounded-full"
-                            src={user?.avatar || avatar}
+                            src={process.env.REACT_APP_BASE_STATIC_FILE + user?.avatar || avatar}
                             alt=""
                           />
                         </Menu.Button>

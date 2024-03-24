@@ -18,6 +18,11 @@ export const tokenRequestInterceptor = async (apiCall, refreshToken) => {
     return { status, data };
   }
 };
+
+// Upload
+
+export const uploadImage = (formData) => apiInstance.post("/upload", formData);
+
 // Authenticate
 export const login = (formData) =>
   apiInstance.post("/auth/login", { ...formData }, {withCredentials: true});

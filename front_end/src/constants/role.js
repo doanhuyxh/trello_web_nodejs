@@ -1,7 +1,7 @@
 export const roles = {
   STAFF: "Staff",
-  QA_COORDINATOR: "QA Coordinator",
-  QA_MANAGER: "QA Manager",
+  QA_COORDINATOR: "MARKETING COORDINATOR",
+  QA_MANAGER: "MARKETING MANAGER",
   ADMIN: "Admin",
-  ALL: ["Staff", "QA Coordinator", "QA Manager", "Admin"]
+  ALL: ["Staff", "MARKETING COORDINATOR", "MARKETING MANAGER", "Admin"]
 };
