@@ -9,7 +9,7 @@ const getAllUser = async () => {
 
   const qaManager = await User.find({ role: process.env.QAMANAGER })
     .sort([["createdAt", "asc"]])
-    
+
   const qaCoordiator = await User.find({ role: process.env.QACOORDINATOR })
     .sort([["createdAt", "asc"]])
 
@@ -19,7 +19,7 @@ const getAllUser = async () => {
   return [...qaManager, ...qaCoordiator, ...userDb];
 };
 
-const getUserByUsername = async (username) => { 
+const getUserByUsername = async (username) => {
    const qaManager = await User.findOne({
      role: process.env.QAMANAGER,
      fullname: new RegExp(username, "i"),
@@ -60,7 +60,6 @@ const updateUser = async (id, updateAccount) => {
 
       await User.findByIdAndUpdate(id, {
         fullname: fullname,
-        password: encryptedPassword,
         dateOfBirth: dateOfBirth,
         address: address,
         age: age,
