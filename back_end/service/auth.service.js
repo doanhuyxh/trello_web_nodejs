@@ -64,32 +64,32 @@ const register = async (registerAccount, origin) => {
     const checkAccountExistedInDb = await User.findOne({ username });
     if (checkAccountExistedInDb) {
       throw new Error("Account already exists");
-    } 
+    }
     else {
       try {
         const createAccount = new User({
           ...registerAccount,
           email: username,
           password: password,
-          role: role || process.env.STAFF,
+          role: role || process.env.STUDENT,
         });
         await createAccount.save();
         return createAccount;
       } catch (error) {
         if (error.name === "ValidationError") {
           let errors = {};
-  
+
           Object.keys(error.errors).forEach((key) => {
             errors[key] = error.errors[key].message;
           });
           console.log(errors);
-  
+
           throw new Error(errors);
         }
       }
     }
   };
-  
+
   const changePassword = async (user, oldPass, newPass) => {
     const userInDb = await User.findById(user.id);
    const decrypted = CryptoJS.AES.decrypt(userInDb.password, process.env.ENCRYPT_KEY);
@@ -101,7 +101,7 @@ const register = async (registerAccount, origin) => {
      throw new Error("Old password is wrong")
    }
   }
-  
+
   module.exports = {
     register,
     signToken,
@@ -110,4 +110,3 @@ const register = async (registerAccount, origin) => {
     revokeToken,
     changePassword,
   };
-  

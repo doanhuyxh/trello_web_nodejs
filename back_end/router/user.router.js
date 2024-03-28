@@ -37,11 +37,20 @@ userRouter.get(
     authorize([
       process.env.QAMANAGER,
       process.env.ADMIN,
-      process.env.STAFF,
+      process.env.STUDENT,
       process.env.QACOORDINATOR,
     ]),
   ],
   userController.getUserById
+);
+
+userRouter.get(
+    "/getdepartment",
+    [
+        passport.authenticate("jwt", { session: false }),
+        authorize([process.env.QAMANAGER, process.env.ADMIN]),
+    ],
+    userController.getUserWithoutDepartment
 );
 
 module.exports = userRouter;

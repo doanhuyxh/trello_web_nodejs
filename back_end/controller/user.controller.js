@@ -5,8 +5,9 @@ const {
     updateUser,
     deleteUser,
     reactiveUser,
+  findStaffWithoutDepartment
   } = require("../service/user.service.js");
-  
+
   const userController = {
     getAllUser: async (req, res) => {
       const user = await getAllUser();
@@ -43,10 +44,17 @@ const {
         res.status(200).json({ message: "Account actived" });
       } catch (error) {
         res.status(400).json({ message: error.message });
-  
+
       }
-    }
+    },
+    getUserWithoutDepartment: async (req, res) => {
+      try {
+        const result = await findStaffWithoutDepartment();
+        res.status(200).json(result);
+      } catch (err) {
+        console.log(err);
+      }
+    },
   };
-  
+
   module.exports = userController;
-  

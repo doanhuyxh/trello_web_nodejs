@@ -7,13 +7,13 @@ const getAllUser = async () => {
 
   //const admin = await User.find({ role: process.env.ADMIN });
 
-  const qaManager = await User.find({ role: process.env.QAMANAGER })
+  const qaManager = await User.find({ role: process.env.MARKETINGMANAGER })
     .sort([["createdAt", "asc"]])
 
-  const qaCoordiator = await User.find({ role: process.env.QACOORDINATOR })
+  const qaCoordiator = await User.find({ role: process.env.MARKETINGCOORDINATOR })
     .sort([["createdAt", "asc"]])
 
-  const userDb = await User.find({ role: process.env.STAFF })
+  const userDb = await User.find({ role: process.env.STUDENT })
     .sort([["createdAt", "asc"]])
 
   return [...qaManager, ...qaCoordiator, ...userDb];
@@ -21,10 +21,10 @@ const getAllUser = async () => {
 
 const getUserByUsername = async (username) => {
    const qaManager = await User.findOne({
-     role: process.env.QAMANAGER,
+     role: process.env.MARKETINGMANAGER,
      fullname: new RegExp(username, "i"),
    });
-  const listUserInDb = await User.find({role: process.env.STAFF, fullname: new RegExp(username, 'i')})
+  const listUserInDb = await User.find({role: process.env.STUDENT, fullname: new RegExp(username, 'i')})
     .sort([["createdAt", "asc"]])
     if(qaManager) {
       return [qaManager, ...listUserInDb]
@@ -91,6 +91,14 @@ const reactiveUser = async (id) => {
   await User.findByIdAndUpdate(id, {deleted: false});
 }
 
+const findStaffWithoutDepartment = async () => {
+  const listUserInDb = await User.find({
+    department: "",
+    role: [process.env.STUDENT, process.env.MARKETINGMANAGER],
+  });
+  return listUserInDb;
+};
+
 
 module.exports = {
   getAllUser,
@@ -98,5 +106,6 @@ module.exports = {
   getUserById,
   updateUser,
   deleteUser,
-  reactiveUser
+  reactiveUser,
+  findStaffWithoutDepartment
 };

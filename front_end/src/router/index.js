@@ -8,6 +8,10 @@ import ErrorPage from "../screens/error";
 import { roles } from "../constants/role";
 
 import LandingPage from "../screens/landingPage";
+import UserInDepartment from "../screens/userInDepartment";
+import Departments from "../screens/departments";
+import IdeaDetail from "../screens/IdeaDetail";
+import HomePage from "../screens/ideasList";
 
 
 const AppRouter = () => {
@@ -38,6 +42,38 @@ const AppRouter = () => {
             </PrivateRoute>
           }
         />
+          <Route
+              path="/ideas"
+              element={
+                  <PrivateRoute>
+                      <HomePage />
+                  </PrivateRoute>
+              }
+          />
+          <Route
+              path="/post/:id"
+              element={
+                  <PrivateRoute>
+                      <IdeaDetail />
+                  </PrivateRoute>
+              }
+          />
+          <Route
+              path="/departments"
+              element={
+                  <PrivateRoute allowRoles={[roles.ADMIN]}>
+                      <Departments />
+                  </PrivateRoute>
+              }
+          />
+          <Route
+              path="/departments/:department"
+              element={
+                  <PrivateRoute allowRoles={[roles.ADMIN]}>
+                      <UserInDepartment />
+                  </PrivateRoute>
+              }
+          />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { useForm } from "react-hook-form";
 import {
+  getAllDepartment,
   getSingleUser,
   tokenRequestInterceptor,
   updateUser,
@@ -70,6 +71,7 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
       role: "",
       address: "",
       avatar: "",
+      department:""
     },
   });
 
@@ -83,10 +85,30 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
     register("role");
     register("address");
     register("avatar");
+    register("department");
   }, [register]);
 
+  const [departments, setDepartments] = useState([]);
+
+  const loadDepartment = useCallback(async () => {
+    const loadAllDataOfDepartment = async () => {
+      const { data, status } = await getAllDepartment(token);
+      return { data, status };
+    };
+    const { status, data } = await tokenRequestInterceptor(
+        loadAllDataOfDepartment,
+        getNewTokenRequest
+    );
+    if (status === 200) {
+      setDepartments((prev) => data);
+      setValue("department", data[0].name);
+    }
+  }, [token, setValue, getNewTokenRequest]);
+
+
+
   const onEditChange = (e) => {
-    if(e.target.name === "avatarFile"){
+    if (e.target.name === "avatarFile") {
       const formData = new FormData();
       formData.append("image", e.target.files[0]);
       const upload = async () => {
@@ -98,7 +120,7 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
         }
       };
       upload();
-    }else{
+    } else {
       //setValue((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     }
   };
@@ -148,6 +170,11 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
       toast.warning(data.message);
     }
   };
+
+  useEffect(() => {
+    loadDepartment();
+  }, [loadDepartment]);
+
 
   return (
     <>
@@ -223,15 +250,20 @@ const EditUserPage = ({ close, userId, token, getNewTokenRequest, loadUser }) =>
               { name: "Unknown" },
             ]}
           />
+          {user.role !== roles.STUDENT && <SelectOption
+              {...register("department")}
+              defaultValue={getValues("department")}
+              listData={departments.filter((item) => !item.deleted)}
+          />}
           <SelectOption
             {...register("role")}
             defaultValue={getValues("role")}
             name="role"
             onChange={onEditChange}
             listData={[
-              { name: roles.QA_COORDINATOR },
-              { name: roles.QA_MANAGER },
-              { name: roles.STAFF },
+              { name: roles.MARKETING_COORDINATOR },
+              { name: roles.MARKETING_MANAGER },
+              { name: roles.STUDENT },
               { name: roles.ADMIN },
             ]}
           />

@@ -20,7 +20,6 @@ export const tokenRequestInterceptor = async (apiCall, refreshToken) => {
 };
 
 // Upload
-
 export const uploadImage = (formData) => apiInstance.post("/upload", formData);
 
 // Authenticate
@@ -79,7 +78,7 @@ export const searchUserByUsername = (username, token) =>
     headers: { Authorization: `Bearer ${token}` },
   });
 
-export const assignStaff = (formData, id, token) =>
+export const assignSTUDENT = (formData, id, token) =>
   apiInstance.put(
     `users/${id}`,
     { ...formData },
@@ -88,7 +87,7 @@ export const assignStaff = (formData, id, token) =>
     }
   );
 
-export const assignStaffToManager = (formData, id, token) =>
+export const assignSTUDENTToManager = (formData, id, token) =>
   apiInstance.put(
     `users/assign/${id}`,
     { ...formData },
@@ -96,38 +95,115 @@ export const assignStaffToManager = (formData, id, token) =>
       headers: { Authorization: `Bearer ${token}` },
     }
   );
-
+//Department
 export const getUserWithoutDepartment = (token) =>
   apiInstance.get(`users/getdepartment`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-export const uploadExcelCreateUser = (formData, token) =>
-  apiInstance.post("/users/uploadexcel", formData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type":
-        "multipart/form-data; boundary=<calculated when request is sent>",
-    },
-  });
+export const createDepartment = (formData, token) =>
+    apiInstance.post(
+        "/departments/",
+        { ...formData },
+        { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-export const confirmUserExcel = (filename, token) =>
-  apiInstance.get(`/users/confirm/${filename}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
 
-export const cancelUserExcel = (filename, token) =>
-  apiInstance.get(`/users/cancel/${filename}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+export const searchDepartByName = (name, token) =>
+    apiInstance.get(`departments?name=${name}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
 
 export const getAllDepartment = (token) =>
-  apiInstance.get("/departments/", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+    apiInstance.get("/departments/", {
+        headers: { Authorization: `Bearer ${token}` },
+    });
 
+export const findDepartmentByID = (token, id) =>
+    apiInstance.get(`/departments/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+export const updateDepartment = (formData, id, token) =>
+    apiInstance.put(
+        `/departments/${id}`,
+        { ...formData },
+        { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+export const deleteDepartment = (token, id) =>
+    apiInstance.delete(`/departments/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+export const reactiveDepartment = (token, id) =>
+    apiInstance.get(`/departments/reactive/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+
+//Idea feature API endpoint
+export const getAllIdeaWithFilter = (filter, page = 1, token) =>
+    apiInstance.get(`/ideas?filter=${filter}&page=${page}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+export const createIdea = (formData, token) =>
+    apiInstance.post(
+        "/ideas/create",
+        { ...formData },
+        { headers: { Authorization: `Bearer ${token}` } }
+    );
+export const uploadSupportDocument = (formData, token) =>
+    apiInstance.post("/ideas/upload", formData, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+export const uploadEditorContent = (formData, token) =>
+    apiInstance.post("/ideas/document-create", formData, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+export const getSingleIdea = (id, token) =>
+    apiInstance.get(`/ideas/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+export const commentToIdea = (id, data, token) =>
+    apiInstance.post(
+        `/ideas/${id}/comment`,
+        { ...data },
+        {
+            headers: { Authorization: `Bearer ${token}` },
+        }
+    );
+export const reactToIdea = (id, data, token) =>
+    apiInstance.post(
+        `/ideas/${id}/reaction`,
+        { ...data },
+        {
+            headers: { Authorization: `Bearer ${token}` },
+        }
+    );
+export const increateView = (id, token) =>
+    apiInstance.get(`/ideas/${id}/view`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+export const countIdea = (token) =>
+    apiInstance.get("/ideas/count", {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+export const findPost = (token) =>
+    apiInstance.get("/ideas/find-ideas", {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+export const findPostOfDepartment = (token) =>
+    apiInstance.get("/ideas/department/count", {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+export const StaffPostedOrNotOfDepart = (token) =>
+    apiInstance.get("/ideas/department/find-post", {
+        headers: { Authorization: `Bearer ${token}` },
+    });
 
 
 export const getAllSubRoute = () => apiInstance.get("/sub-route");

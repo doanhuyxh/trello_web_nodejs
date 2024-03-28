@@ -17,7 +17,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import DateTimePicker from "../../components/DateTimePicker";
 import { ErrorMessage } from "@hookform/error-message";
 import ErrorMessageCustom from "../../components/errorMessage";
-import {PlusCircleIcon} from '@heroicons/react/solid'
+import { PlusCircleIcon } from '@heroicons/react/solid'
 
 
 
@@ -28,12 +28,12 @@ const registerFormValidationSchema = yup.object({
     .email("Username be a valid email")
     .max(255)
     .required("Username is required"),
-  
+
   dateOfBirth: yup
     .date()
     .required("Date of Birth is required")
-    .min(new Date(1950, 0, 1), "Your Birthday cannot before 1/1/1950")
-    .max(new Date(2004, 0, 1), "Your Birthday cannot after 1/1/2004"),
+    .min(new Date(1950, 0, 1), "Your Birthday cannot before 1/1/1950"),
+    address: yup.string().required("Address must be filled"),
 });
 
 
@@ -53,16 +53,35 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest, roles }) => 
       dateOfBirth: "",
       gender: "Male",
       fullname: "",
+      address:"",
       role: "",
       password: "",
       confirmPassword: "",
       avatar: "",
+      department:""
     },
   });
 
   const [avatar, setAvatar] = useState("");
 
   const options = roles.ALL.map(role => ({ name: role, value: role }));
+  const [departments, setDepartments] = useState([]);
+
+  const loadDepartment = useCallback(async () => {
+    const loadAllDataOfDepartment = async () => {
+      const { data, status } = await getAllDepartment(token);
+      return { data, status };
+    };
+    const { status, data } = await tokenRequestInterceptor(
+        loadAllDataOfDepartment,
+        getNewTokenRequest
+    );
+    if (status === 200) {
+      setDepartments((prev) => data);
+      setValue("department", data[0].name);
+    }
+  }, [token, setValue, getNewTokenRequest]);
+
 
   const onEditChange = (e) => {
     const formData = new FormData();
@@ -71,15 +90,15 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest, roles }) => 
       const { status, data } = await uploadImage(formData);
       if (status === 200) {
         setValue("avatar", data.path);
-       setAvatar(data.path);
+        setAvatar(data.path);
       }
     };
     upload();
   }
 
   useEffect(() => {
-    console.log(options);
-  },[]);
+    loadDepartment();
+  }, [loadDepartment]);
 
   const onSubmit = async (formData) => {
     const { status, data } = await registerApi(formData);
@@ -97,6 +116,7 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest, roles }) => 
         gender: "",
         role: "",
         avatar: "",
+        department:""
       });
       loadUser();
       close();
@@ -109,7 +129,7 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest, roles }) => 
     <>
       <div className="w-screen sm:max-w-xl">
         <Form title="Create Account">
-        <label htmlFor="avatarFile" className="w-32 h-auto text-center bg-green-300 rounded-md">
+          <label htmlFor="avatarFile" className="w-32 h-auto text-center bg-green-300 rounded-md">
             {avatar ? <img src={process.env.REACT_APP_BASE_STATIC_FILE + avatar} /> : "Upload Avatar"}
           </label>
           <InputField
@@ -161,6 +181,16 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest, roles }) => 
             errors={errors}
             render={({ message }) => <ErrorMessageCustom message={message} />}
           />
+          <InputField
+            type="text"
+            placeholder="Address"
+            {...register("address")}
+          />
+          <ErrorMessage
+            name="address"
+            errors={errors}
+            render={({ message }) => <ErrorMessageCustom message={message} />}
+          />
           <SelectOption
             {...register("gender")}
             defaultValue={getValues("gender")}
@@ -171,10 +201,22 @@ const RegisterPage = ({ close, loadUser, token, getNewTokenRequest, roles }) => 
             ]}
           />
           <SelectOption
+              {...register("department")}
+              defaultValue={getValues("department")}
+              listData={departments.filter((item) => !item.deleted)}
+          />
+          <SelectOption
             {...register("role")}
             defaultValue={getValues("role")}
             listData={options}
-          />
+            id="role"
+          >
+            <option disabled value="">
+              Role
+            </option>
+          </SelectOption>
+
+
           <Button
             onClick={handleSubmit(onSubmit)}
             role="submit"

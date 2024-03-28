@@ -55,7 +55,7 @@ const Navbar = ({ authenticateReducer, doLogout, getNewTokenRequest }) => {
   });
 
   const navigation = [
-    
+    { name: "Ideas", href: "/ideas", current: location.pathname === "/ideas" },
   ];
 
   const toggleChangePassword = (e) => {
